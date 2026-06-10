@@ -314,7 +314,7 @@ const ui = {
         }
     },
 
-    mostraImmaginiReference() {
+        mostraImmaginiReference() {
         const grid = document.getElementById('reference-grid');
         if (!grid) return;
         grid.innerHTML = "";
@@ -340,6 +340,41 @@ const ui = {
             img.style.width = "100%";
             img.style.height = "100%";
             img.style.objectFit = "cover";
+            img.style.cursor = "pointer";
+
+            // --- LO ZOOM INTEGRATO DELLA PRIMA VERSIONE (RIPRISTINATO) ---
+            img.onclick = () => {
+                if (img.classList.contains('fullscreen-active')) {
+                    img.classList.remove('fullscreen-active');
+                    img.style.position = "static";
+                    img.style.width = "100%";
+                    img.style.height = "100%";
+                    img.style.objectFit = "cover";
+                    img.style.zIndex = "1";
+                    img.style.background = "transparent";
+                } else {
+                    // Chiude eventuali altre foto lasciate aperte per errore
+                    document.querySelectorAll('.fullscreen-active').forEach(el => {
+                        el.classList.remove('fullscreen-active');
+                        el.style.position = "static";
+                        el.style.width = "100%";
+                        el.style.height = "100%";
+                        el.style.objectFit = "cover";
+                        el.style.zIndex = "1";
+                        el.style.background = "transparent";
+                    });
+                    // Ingrandisce a tutto schermo nero sopra a ogni cosa
+                    img.classList.add('fullscreen-active');
+                    img.style.position = "fixed";
+                    img.style.top = "0";
+                    img.style.left = "0";
+                    img.style.width = "100vw";
+                    img.style.height = "100vh";
+                    img.style.objectFit = "contain";
+                    img.style.background = "rgba(0,0,0,0.95)";
+                    img.style.zIndex = "99999";
+                }
+            };
             container.appendChild(img);
 
             const deleteBtn = document.createElement('div');
@@ -353,6 +388,7 @@ const ui = {
             grid.appendChild(container);
         });
     },
+
 
     eliminaImmagineReference(index) {
         let immaginiSalvate = JSON.parse(localStorage.getItem('rei_ref_images')) || [];
