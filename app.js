@@ -1,6 +1,6 @@
 // --- CONFIGURAZIONE CHIAVI DI ACCESSO SUPABASE ---
 const SUPABASE_URL = "https://jmelxmgxmmaiqcovbvmu.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptZWx4bWd4bW1haXFjb3Zidm11Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjkyNTEsImV4cCI6MjA5NTA0NTI1MX0.hT0JadsSHrs2WdwImGYo8B7r9CgYGbo7W0PiRFL5Bg8";
+const SUPABASE_KEY = "sb_publishable_kMyZYDEYOYZEgSgaiciCuw_C3XjLCDd";
 let supabaseClient = null;
 
 const ui = {
@@ -403,7 +403,7 @@ if (target) target.classList.remove('hidden');
         }
     },
 
-                    async handleRegister() {
+            async handleRegister() {
         const emailInput = document.getElementById('auth-email');
         const passwordInput = document.getElementById('auth-password');
         if (!emailInput || !passwordInput) return;
@@ -416,14 +416,11 @@ if (target) target.classList.remove('hidden');
             return;
         }
 
-        // APERTURA ISTANTANEA: Mostra subito la finestra centrale richiesta
-        const confirmModal = document.getElementById('confirm-modal');
-        if (confirmModal) {
-            confirmModal.style.display = "flex";
-        }
+        // MESSAGGIO RICHIESTO: Avvisa subito l'utente a schermo
+        this.showToast("Controlla la mail per confermare");
 
         if (!supabaseClient) {
-            console.error("Database non pronto");
+            console.error("Database non inizializzato");
             return;
         }
 
@@ -436,15 +433,14 @@ if (target) target.classList.remove('hidden');
             if (error) {
                 this.showToast("Errore: " + error.message);
             } else {
-                // Svuota i campi visivi sul telefono per sicurezza
+                // Svuota i campi per pulizia grafica
                 emailInput.value = "";
                 passwordInput.value = "";
             }
         } catch (e) {
-            console.error(e);
+            console.error("Errore invio dati:", e);
         }
     },
-
 
     async handleLogin() {
         const emailInput = document.getElementById('auth-email');
@@ -506,30 +502,9 @@ if (target) target.classList.remove('hidden');
     }
     ui.mostraImmaginiReference();
 
-    const supaLib = window.supabase || (window.supabaseJS ? window.supabaseJS : null);
-    
-    if (supaLib) {
-        supabaseClient = supaLib.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        // RIPRISTINO: Intercetta il rientro dalla mail di conferma
-        if (window.location.hash.includes("access_token") || window.location.search.includes("code")) {
-            ui.isUnlocked = true;
-            if (title) {
-                title.innerText = "PRO";
-                title.style.color = "#ffb700";
-                title.style.borderColor = "#ffb700";
-            }
-            ui.caricaMagazzino();
-            ui.showToast("Account Verificato! PRO Attivo 🚀");
-            
-            // Pulisce l'indirizzo del browser per non farlo ricaricare all'infinito
-            window.history.replaceState({}, document.title, window.location.pathname);
-            
-            setTimeout(() => ui.showSection('inventory'), 1200);
-            return;
-        }
-
-        // Controllo automatico standard per i riavvii successivi
+    // Aggancia la libreria ufficiale caricata dall'HTML
+    if (window.supabase) {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         supabaseClient.auth.getSession().then(({ data }) => {
             if (data && data.session) {
                 ui.isUnlocked = true;
@@ -541,7 +516,5 @@ if (target) target.classList.remove('hidden');
                 ui.caricaMagazzino();
             }
         });
-    } else {
-        console.log("Database in attesa di caricamento...");
     }
 };
