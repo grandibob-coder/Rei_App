@@ -314,45 +314,55 @@ const ui = {
         }
     },
 
-    mostraImmaginiReference() {
-        const grid = document.getElementById('reference-grid');
-        if (!grid) return;
-        grid.innerHTML = "";
+        showReferenceImages() {
+        const container = document.getElementById('reference-images-container');
+        if (!container) return;
+        container.innerHTML = "";
 
-        const immaginiSalvate = JSON.parse(localStorage.getItem('rei_ref_images')) || [];
-
-        if (immaginiSalvate.length === 0) {
-            grid.innerHTML = `<div style="grid-column: span 2; text-align:center; color:#666; padding:30px; font-size:13px;">Nessuna immagine caricata.</div>`;
+        const saved = JSON.parse(localStorage.getItem('rei_reference_images') || '[]');
+        if (saved.length === 0) {
+            container.innerHTML = `<p style="color: #444; font-size: 13px; text-align: center; margin-top: 40px;">No inspiration images loaded for this job.</p>`;
             return;
         }
 
-        immaginiSalvate.forEach((imgSrc, index) => {
-            const container = document.createElement('div');
-            container.style.position = "relative";
-            container.style.borderRadius = "10px";
-            container.style.overflow = "hidden";
-            container.style.aspectRatio = "1/1";
-            container.style.border = "1px solid #222";
-            container.style.background = "#000";
-
+        saved.forEach(imgData => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            
             const img = document.createElement('img');
-            img.src = imgSrc;
-            img.style.width = "100%";
-            img.style.height = "100%";
-            img.style.objectFit = "cover";
-            container.appendChild(img);
+            img.src = imgData;
+            img.style.width = '100%';
+            img.style.borderRadius = '8px';
+            img.style.cursor = 'pointer';
+            img.style.transition = 'all 0.3s ease';
 
-            const deleteBtn = document.createElement('div');
-            deleteBtn.innerText = "×";
-            deleteBtn.style.cssText = "position:absolute; top:5px; right:5px; background:rgba(0,0,0,0.7); color:#fff; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:bold; cursor:pointer;";
-            deleteBtn.onclick = (e) => {
-                e.stopPropagation();
-                this.eliminaImmagineReference(index);
+            // CHIRURGICAL FULLSCREEN TOGGLE LOGIC
+            img.onclick = () => {
+                if (img.classList.contains('fullscreen-active')) {
+                    img.classList.remove('fullscreen-active');
+                    img.style.position = 'static';
+                    img.style.width = '100%';
+                    img.style.height = 'auto';
+                    img.style.zIndex = '1';
+                } else {
+                    document.querySelectorAll('.fullscreen-active').forEach(el => el.click());
+                    img.classList.add('fullscreen-active');
+                    img.style.position = 'fixed';
+                    img.style.top = '0';
+                    img.style.left = '0';
+                    img.style.width = '100vw';
+                    img.style.height = '100vh';
+                    img.style.objectFit = 'contain';
+                    img.style.background = 'rgba(0,0,0,0.95)';
+                    img.style.zIndex = '99999';
+                }
             };
-            container.appendChild(deleteBtn);
-            grid.appendChild(container);
+
+            wrapper.appendChild(img);
+            container.appendChild(wrapper);
         });
     },
+
 
     eliminaImmagineReference(index) {
         let immaginiSalvate = JSON.parse(localStorage.getItem('rei_ref_images')) || [];
@@ -498,7 +508,7 @@ if (target) target.classList.remove('hidden');
 };
 
     window.onload = () => {
-    ui.showSection('dashboard');
+    ui.showReferenceImages();
     const title = document.getElementById('app-title');
     if (title) {
         title.innerText = "LITE";
