@@ -513,7 +513,7 @@ if (target) target.classList.remove('hidden');
                 this.showToast("Email o password errate");
             } else {
                 this.showToast("Accesso eseguito! PRO Attivo 🚀");
-                this.isUnlocked = true;
+                                this.isUnlocked = true;
                 
                 const title = document.getElementById('app-title');
                 if (title) {
@@ -522,6 +522,7 @@ if (target) target.classList.remove('hidden');
                     title.style.borderColor = "#ffb700";
                 }
 
+                // Nasconde il pulsante dorato dopo il login
                 const proBtn = document.getElementById('pro-button') || document.getElementById('passa-pro-btn') || document.querySelector('.btn-pro');
                 if (proBtn) proBtn.style.display = 'none';
 
@@ -532,6 +533,7 @@ if (target) target.classList.remove('hidden');
             this.showToast("Errore di rete");
         }
     },
+
 
 };
 
