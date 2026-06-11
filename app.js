@@ -452,11 +452,14 @@ if (target) target.classList.remove('hidden');
             return;
         }
 
-        // MESSAGGIO RICHIESTO: Avvisa subito l'utente a schermo
-        this.showToast("Controlla la mail per confermare");
+        // Mostra istantaneamente il pop-up centrale richiesto
+        const confirmModal = document.getElementById('confirm-modal');
+        if (confirmModal) {
+            confirmModal.style.display = "flex";
+        }
 
         if (!supabaseClient) {
-            console.error("Database non inizializzato");
+            console.error("Database non pronto");
             return;
         }
 
@@ -469,12 +472,11 @@ if (target) target.classList.remove('hidden');
             if (error) {
                 this.showToast("Errore: " + error.message);
             } else {
-                // Svuota i campi per pulizia grafica
                 emailInput.value = "";
                 passwordInput.value = "";
             }
         } catch (e) {
-            console.error("Errore invio dati:", e);
+            console.error(e);
         }
     },
 
@@ -505,10 +507,8 @@ if (target) target.classList.remove('hidden');
             });
 
             if (error) {
-                // SE LA PASSWORD È SBAGLIATA, BLOCCA TUTTO QUI E DA ERRORE
                 this.showToast("Email o password errate");
             } else {
-                // ENTRA SOLO SE LE CREDENZIALI SONO CORRETTE NEL CLOUD
                 this.showToast("Accesso eseguito! PRO Attivo 🚀");
                 this.isUnlocked = true;
                 
@@ -518,6 +518,9 @@ if (target) target.classList.remove('hidden');
                     title.style.color = "#ffb700";
                     title.style.borderColor = "#ffb700";
                 }
+
+                const proBtn = document.getElementById('pro-button') || document.getElementById('passa-pro-btn') || document.querySelector('.btn-pro');
+                if (proBtn) proBtn.style.display = 'none';
 
                 this.caricaMagazzino();
                 setTimeout(() => this.showSection('inventory'), 1000);
