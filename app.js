@@ -439,7 +439,7 @@ if (target) target.classList.remove('hidden');
         }
     },
 
-                    async handleRegister() {
+    async handleRegister() {
         const emailInput = document.getElementById('auth-email');
         const passwordInput = document.getElementById('auth-password');
         if (!emailInput || !passwordInput) return;
@@ -458,20 +458,17 @@ if (target) target.classList.remove('hidden');
         }
 
         try {
-            // Lancia prima la richiesta reale a internet
             const { data, error } = await supabaseClient.auth.signUp({
                 email: email,
                 password: password,
                 options: {
-                    // FORZATURA STATICA BLINDATA: Impedisce a internet di perdere il nome della cartella
-                    redirectTo: "https://reilist.github.io/Rei_App/"
+                    redirectTo: "https://github.io"
                 }
             });
 
             if (error) {
                 this.showToast("Errore: " + error.message);
             } else {
-                // APRE IL POP-UP SOLO SE I DATI SONO PARTITI CON SUCCESSO
                 const confirmModal = document.getElementById('confirm-modal');
                 if (confirmModal) {
                     confirmModal.style.display = "flex";
@@ -480,10 +477,11 @@ if (target) target.classList.remove('hidden');
                 passwordInput.value = "";
             }
         } catch (e) {
-            this.showToast("Errore di rete durante l'invio");
+            this.showToast("Errore di rete");
             console.error(e);
         }
     },
+
 
     async handleLogin() {
         const emailInput = document.getElementById('auth-email');
