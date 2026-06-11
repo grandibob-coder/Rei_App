@@ -439,7 +439,7 @@ if (target) target.classList.remove('hidden');
         }
     },
 
-                async handleRegister() {
+                    async handleRegister() {
         const emailInput = document.getElementById('auth-email');
         const passwordInput = document.getElementById('auth-password');
         if (!emailInput || !passwordInput) return;
@@ -452,21 +452,16 @@ if (target) target.classList.remove('hidden');
             return;
         }
 
-        const confirmModal = document.getElementById('confirm-modal');
-        if (confirmModal) {
-            confirmModal.style.display = "flex";
-        }
-
         if (!supabaseClient) {
-            console.error("Database non pronto");
+            this.showToast("Connessione al database non pronta");
             return;
         }
 
         try {
+            // Lancia prima la richiesta reale a internet
             const { data, error } = await supabaseClient.auth.signUp({
                 email: email,
                 password: password,
-                // FORZATURA UNIVERSALE: Dice a Supabase di usare l'indirizzo esatto corrente del sito
                 options: {
                     redirectTo: window.location.origin + window.location.pathname
                 }
@@ -475,14 +470,19 @@ if (target) target.classList.remove('hidden');
             if (error) {
                 this.showToast("Errore: " + error.message);
             } else {
+                // APRE IL POP-UP SOLO SE I DATI SONO PARTITI CON SUCCESSO
+                const confirmModal = document.getElementById('confirm-modal');
+                if (confirmModal) {
+                    confirmModal.style.display = "flex";
+                }
                 emailInput.value = "";
                 passwordInput.value = "";
             }
         } catch (e) {
+            this.showToast("Errore di rete durante l'invio");
             console.error(e);
         }
     },
-
 
     async handleLogin() {
         const emailInput = document.getElementById('auth-email');
