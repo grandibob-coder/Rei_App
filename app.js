@@ -545,9 +545,11 @@ if (target) target.classList.remove('hidden');
     }
     ui.mostraImmaginiReference();
 
-    // Aggancia la libreria ufficiale caricata dall'HTML
+    // INIZIALIZZAZIONE DIRETTA DALLA LIBRERIA LOCALE SUPABASE.JS
     if (window.supabase) {
+        // Collega direttamente il client globale ufficiale usato dai pulsanti
         supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        console.log("Database connected successfully! 🚀");
         
         // --- INTERCETTA IL RIENTRO DALLA MAIL DI CONFERMA ---
         if (window.location.hash.includes("access_token") || window.location.search.includes("code")) {
@@ -576,15 +578,14 @@ if (target) target.classList.remove('hidden');
                     title.style.color = "#ffb700";
                     title.style.borderColor = "#ffb700";
                 }
-                
-                // --- PUNTO 2: NASCONDI IL PULSANTE PASSA A PRO SE GIÀ SBLOCCATO ---
                 const proBtn = document.getElementById('pro-button') || document.getElementById('passa-pro-btn') || document.querySelector('.btn-pro');
                 if (proBtn) {
                     proBtn.style.display = 'none';
                 }
-
                 ui.caricaMagazzino();
             }
         });
+    } else {
+        console.error("Critical Error: supabase library is completely missing!");
     }
 };
