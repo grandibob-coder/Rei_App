@@ -463,7 +463,8 @@ if (target) target.classList.remove('hidden');
                 email: email,
                 password: password,
                 options: {
-                    redirectTo: window.location.origin + window.location.pathname
+                    // FORZATURA STATICA BLINDATA: Impedisce a internet di perdere il nome della cartella
+                    redirectTo: "https://reilist.github.io/Rei_App/"
                 }
             });
 
