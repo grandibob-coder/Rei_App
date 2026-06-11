@@ -439,7 +439,7 @@ if (target) target.classList.remove('hidden');
         }
     },
 
-            async handleRegister() {
+                async handleRegister() {
         const emailInput = document.getElementById('auth-email');
         const passwordInput = document.getElementById('auth-password');
         if (!emailInput || !passwordInput) return;
@@ -452,7 +452,6 @@ if (target) target.classList.remove('hidden');
             return;
         }
 
-        // Mostra istantaneamente il pop-up centrale richiesto
         const confirmModal = document.getElementById('confirm-modal');
         if (confirmModal) {
             confirmModal.style.display = "flex";
@@ -466,7 +465,11 @@ if (target) target.classList.remove('hidden');
         try {
             const { data, error } = await supabaseClient.auth.signUp({
                 email: email,
-                password: password
+                password: password,
+                // FORZATURA UNIVERSALE: Dice a Supabase di usare l'indirizzo esatto corrente del sito
+                options: {
+                    redirectTo: window.location.origin + window.location.pathname
+                }
             });
 
             if (error) {
@@ -479,6 +482,7 @@ if (target) target.classList.remove('hidden');
             console.error(e);
         }
     },
+
 
     async handleLogin() {
         const emailInput = document.getElementById('auth-email');
