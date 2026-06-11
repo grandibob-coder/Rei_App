@@ -541,6 +541,26 @@ if (target) target.classList.remove('hidden');
     // Aggancia la libreria ufficiale caricata dall'HTML
     if (window.supabase) {
         supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        // --- INTERCETTA IL RIENTRO DALLA MAIL DI CONFERMA ---
+        if (window.location.hash.includes("access_token") || window.location.search.includes("code")) {
+            ui.isUnlocked = true;
+            if (title) {
+                title.innerText = "PRO";
+                title.style.color = "#ffb700";
+                title.style.borderColor = "#ffb700";
+            }
+            const proBtn = document.getElementById('pro-button') || document.getElementById('passa-pro-btn') || document.querySelector('.btn-pro');
+            if (proBtn) {
+                proBtn.style.display = 'none';
+            }
+            ui.caricaMagazzino();
+            window.history.replaceState({}, document.title, window.location.pathname);
+            setTimeout(() => ui.showSection('inventory'), 1200);
+            return;
+        }
+
+        // Controllo standard in background per le sessioni già attive
         supabaseClient.auth.getSession().then(({ data }) => {
             if (data && data.session) {
                 ui.isUnlocked = true;
@@ -549,6 +569,13 @@ if (target) target.classList.remove('hidden');
                     title.style.color = "#ffb700";
                     title.style.borderColor = "#ffb700";
                 }
+                
+                // --- PUNTO 2: NASCONDI IL PULSANTE PASSA A PRO SE GIÀ SBLOCCATO ---
+                const proBtn = document.getElementById('pro-button') || document.getElementById('passa-pro-btn') || document.querySelector('.btn-pro');
+                if (proBtn) {
+                    proBtn.style.display = 'none';
+                }
+
                 ui.caricaMagazzino();
             }
         });
