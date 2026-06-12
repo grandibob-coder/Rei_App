@@ -462,7 +462,7 @@ if (target) target.classList.remove('hidden');
                 email: email,
                 password: password,
                 options: {
-                    redirectTo: "https://reilist.github.io/Rei_App/"
+                    redirectTo: window.location.href
                 }
             });
 
@@ -513,8 +513,15 @@ if (target) target.classList.remove('hidden');
                 this.showToast("Email o password errate");
             } else {
                 this.showToast("Accesso eseguito! PRO Attivo 🚀");
-                                this.isUnlocked = true;
+                                 this.isUnlocked = true;
                 
+                // --- MEMORIZZAZIONE FISICA SUL TELEFONO DOPO IL LOGIN ---
+                **localStorage.setItem('rei_app_pro_unlocked', 'true');**
+
+                const title = document.getElementById('app-title');
+                if (title) {
+                    title.innerText = "PRO";
+
                 const title = document.getElementById('app-title');
                 if (title) {
                     title.innerText = "PRO";
@@ -552,9 +559,13 @@ if (target) target.classList.remove('hidden');
         supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         console.log("Database connected successfully! 🚀");
         
-        // --- INTERCETTA IL RIENTRO DALLA MAIL DI CONFERMA ---
+                // --- INTERCETTA IL RIENTRO DALLA MAIL DI CONFERMA ---
         if (window.location.hash.includes("access_token") || window.location.search.includes("code")) {
             ui.isUnlocked = true;
+            
+            // --- MEMORIZZAZIONE FISICA SUL TELEFONO ---
+            **localStorage.setItem('rei_app_pro_unlocked', 'true');**
+
             if (title) {
                 title.innerText = "PRO";
                 title.style.color = "#ffb700";
