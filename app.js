@@ -462,7 +462,7 @@ if (target) target.classList.remove('hidden');
                 email: email,
                 password: password,
                 options: {
-                    redirectTo: window.location.href
+                    redirectTo: "https://reilist.github.io/Rei_App/"
                 }
             });
 
