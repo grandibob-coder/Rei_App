@@ -462,7 +462,7 @@ if (target) target.classList.remove('hidden');
                 email: email,
                 password: password,
                 options: {
-                    emailRedirectTo: "https://reilist.github.io/Rei_App/"
+                    redirectTo: "https://reilist.github.io/rei_app/"
                 }
             });
 
